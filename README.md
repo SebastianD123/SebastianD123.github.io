@@ -1,1 +1,1 @@
-homepage project for compsci 2023-2024
+Homepage project for compsci 2023-2024
