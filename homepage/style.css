@@ -1,0 +1,185 @@
+/* TODO: stop using pixel amounts use %s instead */
+body {
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.body-image {
+    height: 55%;
+}
+
+.essay {
+    height: 55%;
+}
+
+.container p {
+    letter-spacing: 0.5px;
+    line-height: 1.6;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.carousel-image {
+    width: 30%;
+    height: 398px;
+    object-fit: cover;
+}
+
+.carousel-inner {
+    width: 85%;
+}
+
+.card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card-img-top {
+    padding-top: 20px;
+}
+
+.cat-pic3 {
+    height: 55%;
+}
+
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+    font-size: 16px;
+}
+
+.hero {
+    height: 100vh;
+    background-image: url('skyline.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+    padding: 100px 0;
+}
+
+.col-md-4:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s;
+}
+
+.col-md-5:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s;
+}
+
+.image-row .col-md-5 {
+    animation: fadeIn 1.5s ease-in-out;
+}
+
+.hero-text {
+    opacity: 0.9;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInText 2s ease-in-out forwards;
+}
+
+.hero-text2 {
+    opacity: 0.9;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInText 1.5s ease-in-out forwards;
+}
+
+.hero-text3 {
+    opacity: 0.9;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInText 1.3s ease-in-out forwards;
+}
+
+.hero-text4 {
+    opacity: 0.9;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    animation: fadeInText 2.1s ease-in-out forwards;
+}
+
+.image-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image-1 {
+    width: 600px;
+    height: 400px;
+    object-fit: cover;
+}
+
+.image-2 {
+    width: 600px;
+    height: 325px;
+    object-fit: cover;
+}
+
+.navbar {
+    background-color: black;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar a {
+    color: white;
+    padding: 10px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    letter-spacing: 1px;
+    margin-right: 10px;
+}
+
+.navbar a:hover {
+    background-color: #0056b3;
+    transition: background-color 0.35s ease;
+}
+
+.navbar-brand {
+    margin-right: 20px;
+}
+
+.reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 2s, transform 2s;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.py-5 {
+    padding-bottom: 1rem !important;
+}
+
+@keyframes fadeInText {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
