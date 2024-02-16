@@ -12,6 +12,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     cat2Card.addEventListener('click', function() {
-        location.href = 'https://www.amazon.com';
+        location.href = 'map.html';
     });
 });
