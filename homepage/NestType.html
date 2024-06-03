@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<canvas id="graph-placeholder" width="300" height="200"></canvas>
+
+<title>NestType</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+<style>
+  /* Updated styles */
+  body {
+    background-color: #fff;
+    color: #800080;
+    font-family: 'Roboto', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .navbar {
+    background-color: #800080;
+    color: #fff;
+    padding: 10px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    display: flex;
+    justify-content: space-around;
+  }
+  .navbar a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .typing-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px; /* Adjust for navbar */
+  }
+  .text-to-type {
+    color: #800080;
+    margin-bottom: 20px;
+  }
+  .correct {
+    color: #008000;
+  }
+  .incorrect {
+    color: #ff0000;
+  }
+  input {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #800080;
+    color: #800080;
+    font-size: 1.2em;
+    outline: none;
+    caret-color: #800080;
+  }
+  .wpm {
+    margin-top: 20px;
+  }
+  .cursor {
+    display: inline-block;
+    width: 2px;
+    background-color: #800080;
+    margin-left: 2px;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+  /* Timer styles */
+  #timer {
+    color: #ff0000;
+    font-size: 1.5em;
+    margin-top: 10px;
+  }
+  /* Refresh button styles */
+  #refresh {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #800080;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  #refresh:hover {
+    background-color: #a020f0;
+  }
+  /* Graph placeholder styles */
+  #graph-placeholder {
+    width: 1px;
+    height: 1px;
+    background-color: #fff;
+    color: #800080;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: center;
+    margin-top: 130px; /* Add top margin to start under the navbar */
+  }
+  /* Time selection styles */
+  .time-selection {
+    margin-top: 20px;
+  }
+  .time-option {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #800080;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  .time-option:hover {
+    background-color: #a020f0;
+  }
+  .theme-selection {
+    margin-top: 20px;
+  }
+  .theme-option {
+    padding: 10px 20px;
+    font-size: 1em;
+    background-color: #800080;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  .theme-option:hover {
+    background-color: #a020f0;
+  }
+</style>
+</head>
+<body>
+<div class="navbar">
+  <a href="#home">NestType</a>
+</div>
+<div class="typing-test">
+  <div id="text-to-type" class="text-to-type">The quick brown fox jumps over the lazy dog.<span class="cursor"></span></div>
+  <input type="text" id="typing-input" autocomplete="off" autofocus />
+  <div id="timer">Time: <span id="time-left"></span></div>
+  <div id="wpm" class="wpm"></div>
+  <div class="time-selection">
+    <button class="time-option" onclick="setTimeLimit(30)">30s</button>
+    <button class="time-option" onclick="setTimeLimit(60)">60s</button>
+  </div>
+  <button id="refresh">Refresh</button>
+
+<!-- existing script plus the new functionality -->
+<script>
+  const phrases = [
+    "The quick brown fox jumps over the lazy dog.",
+    "A journey of a thousand miles begins with a single step.",
+    "To be or not to be, that is the question.",
+    "Sebastian is the goat.",
+    "Ishmael is the goat.",
+    "Hello everyone welcome to NestType."
+  ];
+  let currentPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+  document.getElementById('text-to-type').innerText = currentPhrase;
+  const typingInput = document.getElementById('typing-input');
+  const wpmDisplay = document.getElementById('wpm');
+  const timeLeftDisplay = document.getElementById('time-left');
+  let startTime, endTime;
+  let timeLimit = 30; // Default time limit in seconds
+  let interval;
+  let correctChars = 0;
+  let incorrectChars = 0;
+  let wpmData = [];
+
+  function setTheme(theme) {
+    if (theme === 'light') {
+      document.body.style.backgroundColor = '#fff';
+      document.body.style.color = '#000';
+    } else if (theme === 'dark') {
+      document.body.style.backgroundColor = '#000';
+      document.body.style.color = '#fff';
+    }
+  }
+
+  function updateTextDisplay(typedText) {
+    let typedLength = typedText.length;
+    let correctText = currentPhrase.substring(0, typedLength);
+    let remainderText = currentPhrase.substring(typedLength);
+    let cursorSpan = '<span class="cursor"></span>';
+
+    if (currentPhrase.startsWith(typedText)) {
+      document.getElementById('text-to-type').innerHTML = 
+        `<span class="correct">${correctText}</span>${remainderText}${cursorSpan}`;
+      correctChars = typedLength;
+    } else {
+      document.getElementById('text-to-type').innerHTML = 
+        `<span class="incorrect">${typedText}</span>${remainderText}${cursorSpan}`;
+      incorrectChars = typedLength - correctText.length;
+    }
+  }
+
+  function setTimeLimit(seconds) {
+    timeLimit = seconds;
+    document.getElementById('time-left').textContent = timeLimit;
+    currentPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+    document.getElementById('text-to-type').innerText = currentPhrase;
+  }
+
+  function startTimer() {
+    interval = setInterval(() => {
+      timeLimit--;
+      timeLeftDisplay.textContent = timeLimit;
+      const currentTime = (new Date() - startTime) / 1000; // Current time in seconds
+      const currentWpm = Math.round((typingInput.value.split(' ').length / currentTime) * 60);
+      wpmData.push(currentWpm);
+      if (timeLimit === 0) {
+        clearInterval(interval);
+        displayResults();
+      }
+    }, 1000);
+  }
+
+  function displayResults() {
+    endTime = new Date();
+    const totalTime = (endTime - startTime) / 60000; // Convert to minutes
+    const totalWords = typingInput.value.split(' ').length;
+    const wpm = Math.round(totalWords / totalTime);
+    const accuracy = Math.round((correctChars / (correctChars + incorrectChars)) * 100);
+    wpmDisplay.innerHTML = `Words: ${totalWords}<br>Time: ${totalTime.toFixed(2)} minutes<br>Accuracy: ${accuracy}%<br>WPM: ${wpm}`;
+    drawGraph(wpmData, totalTime * 60);
+  }
+
+  function drawGraph(wpmData, totalTime) {
+    const ctx = document.getElementById('graph-placeholder').getContext('2d');
+    const labels = Array.from({ length: wpmData.length }, (_, i) => i + 1);
+    const data = {
+      labels: labels,
+      datasets: [{
+        label: 'WPM',
+        backgroundColor: '#800080',
+        borderColor: '#800080',
+        data: wpmData,
+      }]
+    };
+    const config = {
+      type: 'line',
+      data: data,
+      options: {
+        scales: {
+          y: {
+            min: 0,
+            max: 250
+          }
+        }
+      }
+    };
+    new Chart(ctx, config);
+  }
+
+  document.getElementById('refresh').addEventListener('click', () => {
+    location.reload();
+  });
+
+  typingInput.addEventListener('input', () => {
+    const typedText = typingInput.value;
+    updateTextDisplay(typedText);
+
+    if (typedText.length === 1 && !interval) {
+      startTime = new Date();
+      startTimer();
+    }
+
+    if (typedText === currentPhrase) {
+      clearInterval(interval);
+      displayResults();
+    }
+  });
+
+  typingInput.addEventListener('focus', () => {
+    if (!startTime) {
+      startTime = new Date();
+    }
+  });
+</script>
+</body>
+</html>
