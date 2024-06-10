@@ -5,21 +5,19 @@
   <meta charset="UTF-8">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <canvas id="graph-placeholder" width="300" height="200"></canvas>
-
   <title>NestType</title>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
   <style>
-    /* Updated styles */
     body {
       background-color: #fff;
       color: #800080;
       font-family: 'Roboto', sans-serif;
       display: flex;
-      justify-content: center;
+      flex-direction: column;
       align-items: center;
-      height: 100vh;
       margin: 0;
+      padding-top: 60px;
+      overflow-y: auto;
     }
 
     .navbar {
@@ -33,6 +31,7 @@
       font-size: 1.5em;
       display: flex;
       justify-content: space-around;
+      z-index: 1;
     }
 
     .navbar a {
@@ -40,12 +39,46 @@
       text-decoration: none;
     }
 
+    .buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      background-color: #f3f3f3;
+      padding: 10px;
+      border-radius: 15px;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #800080;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .button:hover {
+      background-color: #a020f0;
+    }
+
+    .button.active {
+      background-color: #a020f0;
+    }
+
     .typing-test {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-top: 60px;
-      /* Adjust for navbar */
+      margin-top: 20px;
+      width: 90%;
+      max-width: 800px;
     }
 
     .text-to-type {
@@ -55,7 +88,7 @@
       border: 2px solid #800080;
       padding: 20px;
       border-radius: 10px;
-      width: 50%;
+      width: 100%;
     }
 
     .correct {
@@ -74,10 +107,37 @@
       font-size: 1.2em;
       outline: none;
       caret-color: #800080;
+      width: 100%;
+      max-width: 800px;
     }
 
     .wpm {
       margin-top: 20px;
+    }
+
+    .results-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+      width: 90%;
+      max-width: 800px;
+    }
+
+    .results-content {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .results-content > div {
+      background-color: #f9f9f9;
+      padding: 15px;
+      margin: 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 90%;
     }
 
     .cursor {
@@ -94,77 +154,81 @@
       }
     }
 
-    /* Timer styles */
     #timer {
       color: #ff0000;
       font-size: 1.5em;
       margin-top: 10px;
     }
 
-    /* Refresh button styles */
-    #refresh {
+    .progress-bar {
+      width: 100%;
+      max-width: 800px;
+      height: 25px;
+      background-color: #f3f3f3;
+      border-radius: 25px;
       margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 1em;
+    }
+
+    .progress {
+      height: 25px;
+      width: 0%;
       background-color: #800080;
-      color: white;
-      border: none;
-      cursor: pointer;
+      border-radius: 25px;
+      transition: width 0.5s;
     }
 
-    #refresh:hover {
-      background-color: #a020f0;
-    }
-
-    /* Graph placeholder styles */
     #graph-placeholder {
-      width: 1px;
-      height: 1px;
-      background-color: #fff;
-      color: #800080;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      text-align: center;
-      margin-top: 130px;
-      /* Add top margin to start under the navbar */
-    }
-
-    /* Time selection styles */
-    .time-selection {
+      width: 100%;
+      max-width: 400px;
+      height: 200px;
       margin-top: 20px;
     }
 
-    .time-option {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #800080;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-
-    .time-option:hover {
-      background-color: #a020f0;
-    }
-
-    .theme-selection {
+    #statistics {
       margin-top: 20px;
+      text-align: left;
+      width: 100%;
+      max-width: 400px;
     }
 
-    .theme-option {
-      padding: 10px 20px;
-      font-size: 1em;
-      background-color: #800080;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-right: 10px;
-    }
+    @media (max-width: 600px) {
+      .navbar {
+        font-size: 1em;
+      }
 
-    .theme-option:hover {
-      background-color: #a020f0;
+      .buttons-container {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .button {
+        width: 100%;
+        margin: 5px 0;
+      }
+
+      .results-content {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      #graph-placeholder,
+      #statistics {
+        max-width: 100%;
+        width: 90%;
+      }
+
+      .text-to-type {
+        font-size: 1em;
+        padding: 10px;
+      }
+
+      input {
+        font-size: 1em;
+      }
+
+      #timer {
+        font-size: 1.2em;
+      }
     }
   </style>
 </head>
@@ -173,165 +237,285 @@
   <div class="navbar">
     <a href="#home">NestType</a>
   </div>
+    <button class="button time-option" onclick="setTimeLimit(30)">30s</button>
+    <button class="button time-option" onclick="setTimeLimit(60)">60s</button>
+    <button class="button" id="refresh" onclick="location.reload()">🔄</button>
+  </div>
+
+
   <div class="typing-test">
-    <div id="text-to-type" class="text-to-type">The quick brown fox jumps over the lazy dog.<span class="cursor"></span>
-    </div>
+    <div id="text-to-type" class="text-to-type">The quick brown fox jumps over the lazy dog.<span class="cursor"></span></div>
     <input type="text" id="typing-input" autocomplete="off" autofocus />
     <div id="timer">Time: <span id="time-left"></span></div>
     <div id="wpm" class="wpm"></div>
-    <div class="time-selection">
-      <button class="time-option" onclick="setTimeLimit(30)">30s</button>
-      <button class="time-option" onclick="setTimeLimit(60)">60s</button>
+    <div class="progress-bar">
+      <div id="progress" class="progress"></div>
     </div>
-    <button id="refresh">Refresh</button>
+  </div>
 
-    <!-- existing script plus the new functionality -->
-    <script>
-      const phrases = [
-        "The quick brown fox jumps over the lazy dog.",
-        "A journey of a thousand miles begins with a single step.",
-        "You never did tell me how many copper pennies where in that jar; how come?",
-        "What a beautiful day it is on the beach, here in beautiful and sunny Hawaii.",
-        "Rex Quinfrey, a renowned scientist, created plans for an invisibility machine.",
-        "Do you know why all those chemicals are so hazardous to the environment?",
-        "Max Joykner sneakily drove his car around every corner looking for his dog.",
-        "The two boys collected twigs outside, for over an hour, in the freezing cold!",
-        "When do you think they will get back from their adventure in Cairo, Egypt?",
-        "That herd of bison seems to be moving quickly; does that seem normal to you?",
-        "Those diamonds and rubies will make a beautiful piece of jewelry.",
-        "In a world where technology is rapidly advancing, it’s crucial to stay updated with the latest trends and developments. From artificial intelligence to quantum computing, the future of technology is indeed promising.",
-        "The beauty of nature is beyond description. The rustling leaves, the chirping birds, the blooming flowers, and the serene landscapes, all contribute to the mesmerizing charm of our planet.",
-        "The universe is a vast expanse of space, filled with countless stars, galaxies, and celestial bodies. It’s fascinating to think about the mysteries that lie beyond our reach.",
-        "Reading is a journey of the mind, a way to travel without moving. It opens up new worlds, introduces us to different perspectives, and enriches our understanding of life.",
-        "The pursuit of knowledge is a lifelong journey. It’s not about the destination, but about the journey itself, the experiences we gain, and the wisdom we acquire.",
-        "Music is a universal language that transcends boundaries. It has the power to evoke emotions, inspire creativity, and bring people together like nothing else can.",
-        "Art is a reflection of society. It captures the essence of an era, reflects the thoughts and feelings of the artist, and provokes thought and discussion among viewers.",
-        "The human brain is a marvel of nature. Its complex structure and intricate functions make it one of the most fascinating organs in the human body.",
-        "In the realm of computer science, coding is a fundamental skill. It’s like learning a new language, one that allows us to communicate with machines and create amazing things.",
-        "The field of electricity and magnetism is fascinating. From powering our homes to enabling communication across the globe, these forces have transformed our lives in countless ways."
-      ];
-      let currentPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-      document.getElementById('text-to-type').innerText = currentPhrase;
-      const typingInput = document.getElementById('typing-input');
-      const wpmDisplay = document.getElementById('wpm');
-      const timeLeftDisplay = document.getElementById('time-left');
-      let startTime, endTime;
-      let timeLimit = 30; // Default time limit in seconds
-      let interval;
-      let correctChars = 0;
-      let incorrectChars = 0;
-      let wpmData = [];
+  <div class="results-container" style="display:none;">
+    <div class="results-content">
+      <div id="statistics"></div>
+      <canvas id="graph-placeholder"></canvas>
+    </div>
+  </div>
 
-      function setTheme(theme) {
-        if (theme === 'light') {
-          document.body.style.backgroundColor = '#fff';
-          document.body.style.color = '#000';
-        } else if (theme === 'dark') {
-          document.body.style.backgroundColor = '#000';
-          document.body.style.color = '#fff';
-        }
+  <script>
+    const phrases = [
+      "The quick brown fox jumps over the lazy dog.",
+      "A journey of a thousand miles begins with a single step.",
+      "You never did tell me how many copper pennies where in that jar; how come?",
+      "What a beautiful day it is on the beach, here in beautiful and sunny Hawaii.",
+      "Rex Quinfrey, a renowned scientist, created plans for an invisibility machine.",
+      "Do you know why all those chemicals are so hazardous to the environment?",
+      "Max Joykner sneakily drove his car around every corner looking for his dog.",
+      "The two boys collected twigs outside, for over an hour, in the freezing cold!",
+      "When do you think they will get back from their adventure in Cairo, Egypt?",
+      "That herd of bison seems to be moving quickly; does that seem normal to you?",
+      "Those diamonds and rubies will make a beautiful piece of jewelry.",
+      "In a world where technology is rapidly advancing, it’s crucial to stay updated with the latest trends and developments. From artificial intelligence to quantum computing, the future of technology is indeed promising.",
+      "The beauty of nature is beyond description. The rustling leaves, the chirping birds, the blooming flowers, and the serene landscapes, all contribute to the mesmerizing charm of our planet.",
+      "The universe is a vast expanse of space, filled with countless stars, galaxies, and celestial bodies. It’s fascinating to think about the mysteries that lie beyond our reach.",
+      "Reading is a journey of the mind, a way to travel without moving. It opens up new worlds, introduces us to different perspectives, and enriches our understanding of life.",
+      "The pursuit of knowledge is a lifelong journey. It’s not about the destination, but about the journey itself, the experiences we gain, and the wisdom we acquire.",
+      "Music is a universal language that transcends boundaries. It has the power to evoke emotions, inspire creativity, and bring people together like nothing else can.",
+      "Art is a reflection of society. It captures the essence of an era, reflects the thoughts and feelings of the artist, and provokes thought and discussion among viewers.",
+      "The human brain is a marvel of nature. Its complex structure and intricate functions make it one of the most fascinating organs in the human body.",
+      "In the realm of computer science, coding is a fundamental skill. It’s like learning a new language, one that allows us to communicate with machines and create amazing things.",
+      "The field of electricity and magnetism is fascinating. From powering our homes to enabling communication across the globe, these forces have transformed our lives in countless ways.",
+      "As the sun set over the horizon, the sky was painted with hues of orange and pink. The calm sea reflected the colors, creating a mesmerizing spectacle that left the onlookers in awe.",
+      "In the heart of the bustling city, there was a quaint little café. With its vintage décor and the aroma of freshly brewed coffee, it was a haven for those seeking a moment of tranquility amidst the chaos.",
+      "The forest was a symphony of sounds. The rustling of leaves, the chirping of birds, the whispering wind, all created a melody that was as enchanting as it was soothing.",
+      "The old library was a treasure trove of knowledge. Towering shelves filled with books, manuscripts, and scrolls told tales of times long past, of civilizations that once were, and of the endless pursuit of knowledge.",
+      "The mountain trail, winding through the rugged terrain, offered breathtaking views of the valley below. The journey was challenging, but the sight of the snow-capped peaks against the clear blue sky made every step worth it.",
+      "The night sky was a canvas of stars, each one twinkling with a light of its own. The silence of the night, broken only by the occasional hoot of an owl, added to the magic of the moment.",
+      "The bustling market was a sensory overload. The vibrant colors of the fresh produce, the aroma of spices, the cacophony of vendors calling out to customers, all contributed to the lively atmosphere.",
+      "The tranquil garden, with its blooming flowers and lush greenery, was a sanctuary for those seeking peace. The gentle rustling of leaves and the soft chirping of birds added to its serene charm.",
+      "The ancient ruins stood as a testament to the grandeur of a civilization that once was. Each stone, each carving, each monument, held stories of a time long past, waiting to be discovered.",
+      "The serene lake, nestled amidst the mountains, was a sight to behold. The crystal-clear water reflected the surrounding peaks, creating a picture-perfect scene that was as captivating as it was tranquil."
+    ];
+
+    const typingInput = document.getElementById('typing-input');
+    const wpmDisplay = document.getElementById('wpm');
+    const timeLeftDisplay = document.getElementById('time-left');
+    const progressBar = document.getElementById('progress');
+    const resultsContainer = document.querySelector('.results-container');
+    const statistics = document.getElementById('statistics');
+    let currentPhrase;
+    let startTime, interval;
+    let timeLimit = 30;
+    let correctChars = 0;
+    let incorrectChars = 0;
+    let wpmData = [];
+    let resultsDisplayed = false;
+    const globalWPMs = [20, 30, 40, 50, 60, 70, 80, 90, 100]; // Example global WPM scores
+
+    function setTheme(theme) {
+      const body = document.body;
+      switch (theme) {
+        case 'light':
+          body.style.backgroundColor = '#fff';
+          body.style.color = '#800080';
+          break;
+        case 'dark':
+          body.style.backgroundColor = '#000';
+          body.style.color = '#800080';
+          break;
+        case 'red':
+          body.style.backgroundColor = '#ff0000';
+          body.style.color = '#800080';
+          break;
+        case 'blue':
+          body.style.backgroundColor = '#0000ff';
+          body.style.color = '#800080';
+          break;
+        default:
+          body.style.backgroundColor = '#fff';
+          body.style.color = '#800080';
+          break;
       }
+    }
 
-      function updateTextDisplay(typedText) {
-        let typedLength = typedText.length;
-        let correctText = currentPhrase.substring(0, typedLength);
-        let remainderText = currentPhrase.substring(typedLength);
-        let cursorSpan = '<span class="cursor"></span>';
+    // Event listener for theme selection
+    document.getElementById('theme-selector').addEventListener('change', function() {
+      setTheme(this.value);
+    });
 
-        if (currentPhrase.startsWith(typedText)) {
-          document.getElementById('text-to-type').innerHTML =
-            `<span class="correct">${correctText}</span>${remainderText}${cursorSpan}`;
-          correctChars = typedLength;
-        } else {
-          document.getElementById('text-to-type').innerHTML =
-            `<span class="incorrect">${typedText}</span>${remainderText}${cursorSpan}`;
-          incorrectChars = typedLength - correctText.length;
-        }
+    // Initial theme setup
+    setTheme(document.getElementById('theme-selector').value);
+
+
+
+    function updateTextDisplay(typedText) {
+      let typedLength = typedText.length;
+      let correctText = currentPhrase.substring(0, typedLength);
+      let remainderText = currentPhrase.substring(typedLength);
+      let cursorSpan = '<span class="cursor"></span>';
+
+      if (currentPhrase.startsWith(typedText)) {
+        document.getElementById('text-to-type').innerHTML =
+          `<span class="correct">${correctText}</span>${remainderText}${cursorSpan}`;
+        correctChars = typedLength;
+        incorrectChars = 0;
+      } else {
+        document.getElementById('text-to-type').innerHTML =
+          `<span class="incorrect">${typedText}</span>${remainderText}${cursorSpan}`;
+        incorrectChars = typedLength - correctText.length;
       }
+    }
 
-      function setTimeLimit(seconds) {
-        timeLimit = seconds;
-        document.getElementById('time-left').textContent = timeLimit;
-        currentPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        document.getElementById('text-to-type').innerText = currentPhrase;
-      }
-
-      function startTimer() {
-        interval = setInterval(() => {
-          timeLimit--;
-          timeLeftDisplay.textContent = timeLimit;
-          const currentTime = (new Date() - startTime) / 1000; // Current time in seconds
-          const currentWpm = Math.round((typingInput.value.split(' ').length / currentTime) * 60);
-          wpmData.push(currentWpm);
-          if (timeLimit === 0) {
-            clearInterval(interval);
-            displayResults();
-          }
-        }, 1000);
-      }
-
-      function displayResults() {
-        endTime = new Date();
-        const totalTime = (endTime - startTime) / 60000; // Convert to minutes
-        const totalWords = typingInput.value.split(' ').length;
-        const wpm = Math.round(totalWords / totalTime);
-        const accuracy = Math.round((correctChars / (correctChars + incorrectChars)) * 100);
-        wpmDisplay.innerHTML = `Words: ${totalWords}<br>Time: ${totalTime.toFixed(2)} minutes<br>Accuracy: ${accuracy}%<br>WPM: ${wpm}`;
-        drawGraph(wpmData, totalTime * 60);
-      }
-
-      function drawGraph(wpmData, totalTime) {
-        const ctx = document.getElementById('graph-placeholder').getContext('2d');
-        const labels = Array.from({length: wpmData.length}, (_, i) => i + 1);
-        const data = {
-          labels: labels,
-          datasets: [{
-            label: 'WPM',
-            backgroundColor: '#800080',
-            borderColor: '#800080',
-            data: wpmData,
-          }]
-        };
-        const config = {
-          type: 'line',
-          data: data,
-          options: {
-            scales: {
-              y: {
-                min: 0,
-                max: 250
-              }
+            function setTimeLimit(seconds) {
+              timeLimit = seconds;
+              document.getElementById('text-to-type').innerText = '';
+              timeLeftDisplay.textContent = timeLimit;
+              startTypingTest();
             }
-          }
-        };
-        new Chart(ctx, config);
-      }
 
-      document.getElementById('refresh').addEventListener('click', () => {
-        location.reload();
-      });
+            function startTypingTest() {
+              currentPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+              document.getElementById('text-to-type').innerHTML = currentPhrase + '<span class="cursor"></span>';    function calculateAccuracy() {
+                const totalTypedChars = correctChars + incorrectChars;
+                if (totalTypedChars === 0) return 100; // If nothing typed, accuracy is 100%
+                return Math.round((correctChars / totalTypedChars) * 100);
+              }
+clearInterval(interval);
+              startTime = null;
+              timeLeftDisplay.textContent = timeLimit;
+              progressBar.style.width = '0%';
+            }
 
-      typingInput.addEventListener('input', () => {
-        const typedText = typingInput.value;
-        updateTextDisplay(typedText);
+            function startTimer() {
+              startTime = new Date();
+              interval = setInterval(() => {
+                const elapsedSeconds = Math.floor((new Date() - startTime) / 1000);
+                if (elapsedSeconds < timeLimit) {
+                  timeLeftDisplay.textContent = timeLimit - elapsedSeconds;
+                  updateWPM(elapsedSeconds);
+                } else {
+                  clearInterval(interval);
+                  displayResults();
+                }
+              }, 1000);
+            }
 
-        if (typedText.length === 1 && !interval) {
-          startTime = new Date();
-          startTimer();
-        }
+    function updateWPM(elapsedSeconds) {
+      // Get the input value and trim it to remove leading and trailing whitespace
+      const typedText = typingInput.value.trim();
 
-        if (typedText === currentPhrase) {
-          clearInterval(interval);
-          displayResults();
-        }
-      });
+      // Split the input text by whitespace and filter out any empty strings
+      const typedWords = typedText.split(/\s+/).filter(word => word.length > 0).length;
 
-      typingInput.addEventListener('focus', () => {
-        if (!startTime) {
-          startTime = new Date();
-        }
-      });
-    </script>
-</body>
+      // Calculate the WPM based on the number of words and elapsed time in minutes
+      const minutes = elapsedSeconds / 60;
+      const wpm = minutes > 0 ? Math.round(typedWords / minutes) : 0;
 
-</html>
+      // Display the WPM and store the value in the wpmData array
+      wpmDisplay.textContent = `WPM: ${wpm}`;
+      wpmData.push(wpm);
+    }
+
+
+    function displayResults() {
+      if (resultsDisplayed) return; // Prevent multiple results display
+      resultsDisplayed = true;
+
+      const endTime = new Date();
+      const totalTime = (endTime - startTime) / 60000; // Convert to minutes
+
+      // Calculate the total number of words typed accurately
+      const typedText = typingInput.value.trim();
+      const totalWords = typedText.split(/\s+/).filter(word => word.length > 0).length;
+
+      const wpm = Math.round(totalWords / totalTime);
+      const accuracy = calculateAccuracy();
+      const percentile = calculatePercentile(wpm, globalWPMs);
+      statistics.innerHTML = `
+        <div>Words: ${totalWords}</div>
+        <div>Time: ${totalTime.toFixed(2)} minutes</div>
+        <div>Accuracy: ${accuracy}%</div>
+        <div>WPM: ${wpm} (Percentile: ${percentile}%)</div>
+      `;
+      drawGraph(wpmData);
+
+      // Show results container
+      resultsContainer.style.display = 'flex';
+    }
+
+
+
+            function calculateAccuracy() {
+              const totalTypedChars = correctChars + incorrectChars;
+              if (totalTypedChars === 0) return 0;
+              return Math.round((correctChars / totalTypedChars) * 100);
+            }
+
+            function drawGraph(wpmData) {
+              const ctx = document.getElementById('graph-placeholder').getContext('2d');
+              const labels = Array.from({ length: wpmData.length }, (_, i) => i + 1);
+              const data = {
+                labels: labels,
+                datasets: [{
+                  label: 'WPM',
+                  backgroundColor: '#800080',
+                  borderColor: '#800080',
+                  data: wpmData,
+                  fill: false
+                }]
+              };
+              const config = {
+                type: 'line',
+                data: data,
+                options: {
+                  scales: {
+                    y: {
+                      min: 0,
+                      max: 250
+                    }
+                  }
+                }
+              };
+              new Chart(ctx, config);
+            }
+
+            function calculatePercentile(wpm, globalWPMs) {
+              globalWPMs.push(wpm);
+              globalWPMs.sort((a, b) => a - b);
+              const rank = globalWPMs.indexOf(wpm) + 1;
+              const percentile = ((rank / globalWPMs.length) * 100).toFixed(2);
+              return percentile;
+            }
+
+            typingInput.addEventListener('input', () => {
+              const typedText = typingInput.value;
+              updateTextDisplay(typedText);
+
+              const typedLength = typingInput.value.length;
+              const totalLength = currentPhrase.length;
+              const progress = (typedLength / totalLength) * 100;
+              progressBar.style.width = progress + '%';
+
+              if (!startTime && typedText.length > 0) {
+                startTimer();
+              }
+
+              if (typedText === currentPhrase) {
+                clearInterval(interval);
+                displayResults();
+              }
+            });
+
+            typingInput.addEventListener('focus', () => {
+              if (!startTime && typingInput.value.length > 0) {
+                startTimer();
+              }
+            });
+
+            // Initializing the timer display
+            timeLeftDisplay.textContent = timeLimit;
+
+            // Set initial phrase
+            startTypingTest();
+          </script>
+        </body>
+
+        </html>
